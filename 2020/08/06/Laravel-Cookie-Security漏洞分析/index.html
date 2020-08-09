@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>Laravel Cookie Security漏洞分析 | Hexo</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/component.css" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <meta name="generator" content="Hexo">
+  <script src="http://static.duoshuo.com/embed.js"></script>
+  
+  
+  
+
+  
+
+</head>
+<body>
+<div class="container">
+    <div class="mp-pusher" id="mp-pusher">
+        <i id="scroll-up" class="fa fa-angle-up"></i>
+        <nav id="mp-menu" class="mp-menu">
+            <div class="mp-level">
+                <a data-pjax class="back-home" style="font-size: 20px" href="/"><h2 ><i class="fa fa-home"></i>
+                        Home</h2></a>
+                <ul class="first-level">
+                    <li>
+                        <a class="fa fa-archive" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Archive</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-archive"></i>
+                                Archive</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-archive" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/06/CVE-2020-5902-F5-BIG-IP-RCE复现分析/">CVE-2020-5902 F5 BIG-IP RCE复现分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/06/Laravel-Cookie-Security漏洞分析/">Laravel Cookie Security漏洞分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/04/25/git-CVE-2020-5260分析/">git CVE-2020-5260分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/04/25/hello-world/">Hello World</a>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-copy" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Categories</a>
+
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-copy"></i>
+                                Categories</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-category" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-tags" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Tags</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-tags"></i>
+                                Tags</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-tag" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="mp-pjax"><a class="fa fa-user" href="/about">&nbsp;&nbsp;&nbsp;About me</a></li>
+                    <li><a class="fa fa-github" href="#">&nbsp;&nbsp;&nbsp;Github</a></li>
+
+                </ul>
+
+            </div>
+        </nav>
+        <div id="pjax">
+            <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2020/08/06/CVE-2020-5902-F5-BIG-IP-RCE复现分析/">CVE-2020-5902 F5 BIG-IP RCE复现分析</a>
+                
+                    <a  data-pjax href="/2020/08/06/Laravel-Cookie-Security漏洞分析/">Laravel Cookie Security漏洞分析</a>
+                
+                    <a  data-pjax href="/2020/04/25/git-CVE-2020-5260分析/">git CVE-2020-5260分析</a>
+                
+                    <a  data-pjax href="/2020/04/25/hello-world/">Hello World</a>
+                
+                
+                
+                <a data-pjax class="fa fa-user" href="/about">&nbsp;&nbsp;&nbsp;About me</a>
+            </div>
+            <nav class="nexus">
+                <li  style="border-left: 1px solid #c6d0da;">
+                    <a id="trigger" href="#"><i class="fa fa-bars"></i></a>
+                </li>
+                <li ><a id="nexus-back" data-pjax href="/">Hexo</a></li>
+                
+                <div id="nav-container">
+                    <div class="post-navbar" style="line-height: 63px;display:none">
+                        <li id="navbar-title"><a href="#">Laravel Cookie Security漏洞分析</a></li>
+                        <li id="navbar-toc" style="border-left: none">
+                            <a style="padding-right: 15px">
+                                <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
+                            </a>
+                            <div class="hidden-box">
+                                <ul id="toc"></ul>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                
+            </nav>
+
+            <div class="scroller">
+            <div class="scroller-inner">
+
+
+<!-- -->
+<!--<body class="post-template">-->
+<!---->
+  
+
+<main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Laravel Cookie Security漏洞分析</h1>
+
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2020-08-06T13:18:26.000Z"
+                              itemprop="datePublished">2020-08-06</time>
+                    </div>
+    </span>
+
+        <section class="post-content">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Laravel发布安全更新，其中指出使用cookie session driver的应用受到漏洞影响，该漏洞会导致rce。<br><a href="https://blog.laravel.com/laravel-cookie-security-releases" target="_blank" rel="noopener">https://blog.laravel.com/laravel-cookie-security-releases</a><br>影响版本：&lt; v6.18.27，&lt; v7.22.0  </p>
+<blockquote>
+<p>Regarding the vulnerability, applications using the “cookie” session driver that were also exposing an encryption oracle via their application were vulnerable to remote code execution. An encryption oracle is a mechanism where arbitrary user input is encrypted and the encrypted string is later displayed or exposed to the user. This combination of scenarios lets the user generate valid Laravel signed encryption strings for any plain-text string, thus allowing them to craft Laravel session payloads when an application is using the “cookie” driver.<br>Today’s fix prefixes cookie values with an HMAC hash of the cookie’s name before encryption and then verifies a matching hash on decryption, making it impossible to craft a valid cookie payload even if an encryption oracle is exposed via the application.</p>
+</blockquote>
+<h2 id="补丁分析"><a href="#补丁分析" class="headerlink" title="补丁分析"></a>补丁分析</h2><p>分析commit历史，发现v7.22.0版本开始修复，但后续又出现了多个版本。<br><a href="https://github.com/laravel/framework/compare/v7.21.0...v7.22.2" target="_blank" rel="noopener">https://github.com/laravel/framework/compare/v7.21.0...v7.22.2</a></p>
+<p>作者的多次补丁<br><a href="https://github.com/laravel/framework/commit/594a3abdec383b55ce32a9e960263f55b41318e2" target="_blank" rel="noopener">594a3abdec383b55ce32a9e960263f55b41318e2</a><br><a href="https://github.com/laravel/[framework/commit/bb9db21af137344feffa192fcabe4e439c8b0f60" target="_blank" rel="noopener">bb9db21af137344feffa192fcabe4e439c8b0f60</a><br><a href="https://github.com/laravel/framework/commit/c9ce261a9f7b8e07c9ebc8a7d45651ee1cf86215" target="_blank" rel="noopener">c9ce261a9f7b8e07c9ebc8a7d45651ee1cf86215</a><br><a href="https://github.com/laravel/framework/commit/5786aa4a388adfcc62862573275bd37d49aa07d7" target="_blank" rel="noopener">5786aa4a388adfcc62862573275bd37d49aa07d7</a><br>除第一次补丁外，后续几次都是对cookie加解密方式进行调整。</p>
+<p>找到处理加密逻辑的类，初步推测可能是padding oracle 攻击。</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/encypter.png" class="" title="encypter">
+
+<p>解密时如果$unserialize是true，则会对解密后的值进行反序列化，漏洞可能与反序列化有关，但未找到直接调用decrypt并且反序列化的入口。解密前会在getJsonPayload函数中会对mac进行校验，伪造iv或者value都会导致mac校验失败，无法进行padding oracle攻击。</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/decrypt.png" class="" title="decrypt">
+
+<p>再看看补丁，其中把cookie的key和value拼接到了一起，并且在解密时校验了key。猜测漏洞是由key1生成的加密cookie值，被用到了key2</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/patch.png" class="" title="patch">  
+
+
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>在本地搭建环境<br><code>composer create-project laravel/laravel --prefer-dist blog</code><br>修改依赖composer.json <code>&quot;laravel/framework&quot;: &quot;=7.21.0&quot;</code><br><code>composer update</code>  </p>
+<p>公告中提到了<code>cookie session driver</code>，修改本地.env中的配置<code>SESSION_DRIVER=file</code><br>重新访问后 session数据被写入cookie，这个字段名是cookie中laravel_session解密后的值，也就是sessionid。此时已知明文、iv、密文，但也解不出key。由于mac校验，也无法使用padding oracle攻击。</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/session.png" class="" title="session">
+
+<p>跟进一下cookie session还原的过程，在CookieSessionHandler类，从cookie中取出session数据</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/sessionhandler.png" class="" title="sessionhandler">
+
+<p>然后在Store中对session数据进行反序列化，这里的prepareForUnserialize没对数据进行任何处理</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/store.png" class="" title="store">
+
+<p>漏洞的sink点应该是在这里，控制了cookie中加密的session数据就能进行反序列化从而rce。</p>
+<p>看看session中的数据格式，测试代码:</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/test.png" class="" title="test">
+
+<p>运行结果，打印出了解密后的session数据</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/output.png" class="" title="output">
+
+<p>现在的主要问题就是如何构造加密的session。<br>经过分析未找到能够直接构造任意加密session的方式，根据补丁猜测此漏洞可能需要配合开发者的漏洞代码才能利用<br>测试代码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">index</span><span class="params">(Request $request)</span> </span>&#123;</span><br><span class="line">        $data = $request-&gt;query(<span class="string">'name'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> response(<span class="string">'Hello World'</span>)-&gt;cookie(</span><br><span class="line">            <span class="string">'name'</span>, $data, <span class="number">120</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把输入数据作为cookie值，将输入数据设置为 <code>{&quot;expires&quot;:1597443282,&quot;data&quot;:&quot;O:4:\&quot;Evil\&quot;:0:{}&quot;}</code> （data部分需要构造反序列化调用链），服务端对其加密后返回在cookie中。然后可利用此值作为session数据进行反序列化攻击。</p>
+<img src="/2020/08/06/Laravel-Cookie-Security%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/unserialize.png" class="" title="unserialize">
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>漏洞比较鸡肋，限制条件较多</p>
+<ol>
+<li>需要开启cookie session driver，默认是file driver</li>
+<li>需要开发者特定的漏洞代码 cookie(‘key’, $value ，value的值完全可控</li>
+<li>反序列化调用链</li>
+</ol>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://laravel-news.com/important-laravel-security-updates" target="_blank" rel="noopener">https://laravel-news.com/important-laravel-security-updates</a><br><a href="http://www.vuln.cn/6315" target="_blank" rel="noopener">http://www.vuln.cn/6315</a><br><a href="https://learnku.com/docs/laravel/7.x/lifecycle/7453" target="_blank" rel="noopener">https://learnku.com/docs/laravel/7.x/lifecycle/7453</a></p>
+
+        </section>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
+            
+            <a data-pjax class="newer-posts" href="/2020/08/06/CVE-2020-5902-F5-BIG-IP-RCE复现分析/">← Prev Post</a>
+            
+            <a class="share-button" data-original-title title>Share this Post</a>
+            
+            <a data-pjax class="older-posts" href="/2020/04/25/git-CVE-2020-5260分析/">Next Post →</a>
+            
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
+        </section>
+
+
+    </article>
+</main>
+
+
+  
+<footer class="site-footer">
+    
+    <div class="inner">
+        <section class="copyright"><a href="/"></a> &copy; Hexo 2014</section>
+        <section class="poweredby">Published with <a target="_blank" href="http://hexo.io/">Hexo   </a> and Theme by <a target="_blank" href="https://github.com/yuche/hexo-theme-kael">Kael</a></section>
+    </div>
+</footer>
+</div>
+</div><!-- /scroller -->
+
+</div><!-- /pusher -->
+</div><!-- /container -->
+</div>
+
+<!-- Easter eggs -->
+
+<div class="egg animated">
+    <a id="close-button" href="#">X</a>
+    <div class="block">
+        <div class="loading">
+            <span class="ball1"></span>
+            <span class="ball2"></span>
+        </div>
+    </div>
+</div>
+  
+<script src="//cdn.staticfile.org/jquery/1.11.0/jquery.min.js"></script>
+<script>
+    if (!window.jQuery) {
+        var script = document.createElement('script');
+        script.src = "/js/jquery.min.js";
+        document.body.appendChild(script);
+    }
+</script>
+<script type="text/javascript" src="/js/lib.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+
+
+
+
+</body>
+</html>
