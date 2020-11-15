@@ -43,6 +43,10 @@
                                 <div class="mp-scroll">
                                 
                                 <li class="search-archive-li mp-pjax">
+                                    <a href="/2020/11/15/fastjson-反序列化漏洞整理/">fastjson 反序列化漏洞整理</a>
+                                </li>
+                                
+                                <li class="search-archive-li mp-pjax">
                                     <a href="/2020/11/15/Thymeleaf-模板漏洞分析/">Thymeleaf 模板漏洞分析</a>
                                 </li>
                                 
@@ -120,6 +124,8 @@
         <div id="pjax">
             <div class="pjax-hidden" style="display: none">
                 
+                    <a  data-pjax href="/2020/11/15/fastjson-反序列化漏洞整理/">fastjson 反序列化漏洞整理</a>
+                
                     <a  data-pjax href="/2020/11/15/Thymeleaf-模板漏洞分析/">Thymeleaf 模板漏洞分析</a>
                 
                     <a  data-pjax href="/2020/08/24/JDK多版本切换/">JDK多版本切换</a>
@@ -170,6 +176,33 @@
   
 <main class="content" role="main">
 
+    
+    <article class="post">
+
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2020/11/15/fastjson-反序列化漏洞整理/">fastjson 反序列化漏洞整理</a>
+            </h1>
+
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2020-11-15T12:25:17.000Z"
+                      itemprop="datePublished">2020-11-15</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                前言fastjson养活了一大批安全从业人员，学习java安全也不得不对fastjson进行学习。在此整理了fastjson的历史漏洞中主要的几个反序列化漏洞，记录下开发者与安全研究者攻防对抗的过程。文中用到的demo及PoC 下载地址
+版本&lt;=1.2.24这应该是fastjson爆出的第一个反序列化漏洞，基本上没什么限制，可以直接通过jdbc构造jndi注入。{&quot;@type&quot;:&quot;com.sun.ro
+                
+            </p>
+            
+        </section>
+    </article>
     
     <article class="post">
 
