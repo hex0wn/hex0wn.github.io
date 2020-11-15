@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>JDK多版本切换 | Hexo</title>
+  <title>Archives: 2020/11 | Hexo</title>
   <meta name="description" content="" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -146,7 +146,7 @@
                 
                 <div id="nav-container">
                     <div class="post-navbar" style="line-height: 63px;display:none">
-                        <li id="navbar-title"><a href="#">JDK多版本切换</a></li>
+                        <li id="navbar-title"><a href="#"></a></li>
                         <li id="navbar-toc" style="border-left: none">
                             <a style="padding-right: 15px">
                                 <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
@@ -165,58 +165,43 @@
 
 
 <!-- -->
-<!--<body class="post-template">-->
+<!--<body class="home-template">-->
 <!---->
   
-
 <main class="content" role="main">
-    <article class="post" >
-    <span class="post-meta">
-                  <div class="tag-tile">
-                      
-                  </div>
-                <h1 class="post-title" style="margin: 14px 0;color:#50585D">JDK多版本切换</h1>
 
-                    <div class="post-meta">
-                        Post on<span class="fa fa-clock-o"></span>
-                        <time datetime="2020-08-24T13:43:28.000Z"
-                              itemprop="datePublished">2020-08-24</time>
-                    </div>
-    </span>
+    
+    <article class="post">
 
-        <section class="post-content">
-            <p>测试Java漏洞对jdk版本有些要求，所以在windows上安装了多个jdk版本，通过环境变量来切换版本。<br>jdk8合集下载地址 <a href="https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html" target="_blank" rel="noopener">https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html</a>  </p>
-<p>在系统变量中为每个版本配置一个路径，我这里根据版本号进行标识 JDK8U112<br>配置JAVA_HOME，值设置为需要切换的版本如%JDK8U112%  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/jdk.png" class=""> 
+        <header class="post-header">
+            <div class="tag-tile">
+                
+                <span class="fa fa-bookmark" style="float:right;color:#f39c12"></span>
+            </div>
+            <h1 class="post-title"><a data-pjax href="/2020/11/15/Thymeleaf-模板漏洞分析/">Thymeleaf 模板漏洞分析</a>
+            </h1>
 
-<p>配置PATH变量，加入%JAVA_HOME%\bin 和 %JAVA_HOME%\jre\bin，并且要将这两项放在Oracle默认的环境变量之前，否则会导致java和javac版本不一致。</p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/path.png" class=""> 
-
-<p>如此配置完后，命令行下的java版本可以成功切换。但是重启idea后还是java版本没变化  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/idea1.png" class=""> 
-
-<p>进入Project Structure -&gt; Project ，修改 Project SDK为想要切换的版本。或者在 Platform Settings -&gt; SDKs中添加并选择  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/idea2.png" class=""> 
-
+            <div class="post-meta">
+                Post on<span class="fa fa-clock-o"></span>
+                <time datetime="2020-11-15T09:41:05.000Z"
+                      itemprop="datePublished">2020-11-15</time>
+            </div>
+        </header>
+        <section class="post-excerpt">
+            <p>
+                
+                前言Thymeleaf 是一个类似Velocity、FreeMarker 的模板引擎，而且Spring Boot推荐使用Thymeleaf引擎。Michael Stepankin和Aleksei Tiurin发表了两篇文章Spring View Manipulation Vulnerability 、Exploiting SSTI in Thymeleaf 来讲Thymeleaf模板的安全问题，在此对相关技术进行深入分析。本文相关代码已
+                
+            </p>
+            
         </section>
-        <hr/>
-        <nav class="pagination" style="width:auto" role="pagination">
-            
-            <a data-pjax class="newer-posts" href="/2020/11/15/Thymeleaf-模板漏洞分析/">← Prev Post</a>
-            
-            <a class="share-button" data-original-title title>Share this Post</a>
-            
-            <a data-pjax class="older-posts" href="/2020/08/24/shiro-权限绕过漏洞合集/">Next Post →</a>
-            
-        </nav>
-        <br/>
-        <br/>
-        <section id="comment">
-            <div id="comment-box"></div>
-        </section>
-
-
     </article>
+    
+    <nav class="pagination" role="pagination">
+        
+        <span class="page-number">Page 1 of 1</span>
+        
+    </nav>
 </main>
 
 

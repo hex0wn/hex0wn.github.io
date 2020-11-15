@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <title>JDK多版本切换 | Hexo</title>
+  <title>Thymeleaf 模板漏洞分析 | Hexo</title>
   <meta name="description" content="" />
   <meta name="HandheldFriendly" content="True" />
   <meta name="MobileOptimized" content="320" />
@@ -146,7 +146,7 @@
                 
                 <div id="nav-container">
                     <div class="post-navbar" style="line-height: 63px;display:none">
-                        <li id="navbar-title"><a href="#">JDK多版本切换</a></li>
+                        <li id="navbar-title"><a href="#">Thymeleaf 模板漏洞分析</a></li>
                         <li id="navbar-toc" style="border-left: none">
                             <a style="padding-right: 15px">
                                 <span id="toc-content" >Introduction</span><i class="fa fa-chevron-down" ></i>
@@ -175,38 +175,72 @@
                   <div class="tag-tile">
                       
                   </div>
-                <h1 class="post-title" style="margin: 14px 0;color:#50585D">JDK多版本切换</h1>
+                <h1 class="post-title" style="margin: 14px 0;color:#50585D">Thymeleaf 模板漏洞分析</h1>
 
                     <div class="post-meta">
                         Post on<span class="fa fa-clock-o"></span>
-                        <time datetime="2020-08-24T13:43:28.000Z"
-                              itemprop="datePublished">2020-08-24</time>
+                        <time datetime="2020-11-15T09:41:05.000Z"
+                              itemprop="datePublished">2020-11-15</time>
                     </div>
     </span>
 
         <section class="post-content">
-            <p>测试Java漏洞对jdk版本有些要求，所以在windows上安装了多个jdk版本，通过环境变量来切换版本。<br>jdk8合集下载地址 <a href="https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html" target="_blank" rel="noopener">https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html</a>  </p>
-<p>在系统变量中为每个版本配置一个路径，我这里根据版本号进行标识 JDK8U112<br>配置JAVA_HOME，值设置为需要切换的版本如%JDK8U112%  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/jdk.png" class=""> 
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Thymeleaf 是一个类似Velocity、FreeMarker 的模板引擎，而且Spring Boot推荐使用Thymeleaf引擎。Michael Stepankin和Aleksei Tiurin发表了两篇文章<a href="https://www.veracode.com/blog/secure-development/spring-view-manipulation-vulnerability" target="_blank" rel="noopener">Spring View Manipulation Vulnerability</a> 、<a href="https://www.acunetix.com/blog/web-security-zone/exploiting-ssti-in-thymeleaf/" target="_blank" rel="noopener">Exploiting SSTI in Thymeleaf</a> 来讲Thymeleaf模板的安全问题，在此对相关技术进行深入分析。本文相关代码已整合到 <a href="https://github.com/hex0wn/learn-java-bug/tree/master/thymeleaf-ssti" target="_blank" rel="noopener">thymeleaf-ssti</a></p>
+<h2 id="视图名可控导致SSTI"><a href="#视图名可控导致SSTI" class="headerlink" title="视图名可控导致SSTI"></a>视图名可控导致SSTI</h2><p>漏洞代码见HelloController，漏洞特征主要表现为Spring所使用的视图名称中包含攻击者可控的部分。严格意义上来说这个问题不算SSTI，因为漏洞触发时还没有运行到渲染模板的阶段。  </p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/view.png" class="">  
 
-<p>配置PATH变量，加入%JAVA_HOME%\bin 和 %JAVA_HOME%\jre\bin，并且要将这两项放在Oracle默认的环境变量之前，否则会导致java和javac版本不一致。</p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/path.png" class=""> 
+<p>根据Michael Stepankin的总结，即使视图名称可控，使用了如下几种方式的代码不受影响</p>
+<ol>
+<li>使用<code>@ResponseBody</code>注解</li>
+<li>模板名称由<code>redirect:</code>或<code>forward:</code>开始（不走ThymeleafView渲染）</li>
+<li>参数中有<code>HttpServletResponse</code>，<code>response</code>已经被处理</li>
+</ol>
+<h2 id="漏洞原理分析"><a href="#漏洞原理分析" class="headerlink" title="漏洞原理分析"></a>漏洞原理分析</h2><p>使用demo进行调试分析，最开始断点打在控制器的return语句处，尝试从这里开始找Thymeleaf处理视图的入口。但是Spring代码复杂，没能定位到相关逻辑。后从官方文档 <a href="https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html#views-and-view-resolvers-in-thymeleaf" target="_blank" rel="noopener">Views and View Resolvers in Thymeleaf</a> 中看到 ThymeleafView 和 ThymeleafViewResolver，在其中成功打断。</p>
+<p>在Controller中执行return后，Spring会自动调度Thymeleaf引擎寻找并渲染模板。简化的流程如下：  </p>
+<blockquote>
+<p>org.thymeleaf.spring5.view.ThymeleafViewResolver.createView()  //根据视图名创建对应的View。 对redirect:和forward:有特殊处理，其他情况则使用ThymeleafView进行渲染展示<br>org.thymeleaf.spring5.view.ThymeleafView.render()<br>org.thymeleaf.spring5.view.ThymeleafView.renderFragment() //根据视图名解析模板名称<br>org.thymeleaf.TemplateEngine.process()  //渲染模板<br>……  </p>
+</blockquote>
+<p>看看renderFragment中如何解析模板名称。这里将模板名称进行拼接 <code>&quot;~{&quot; + viewTemplateName + &quot;}&quot;</code>，然后使用<code>parseExpression</code>进行解析</p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/renderFragment.png" class="">  
+<p><code>org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression()</code>  首先会对表达式进行<code>preprocess</code>预处理</p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/parseExpression.png" class="">  
+<p><code>org.thymeleaf.standard.expression.StandardExpressionPreprocessor.preprocess()</code>，解析出<code>__xx__</code>中间的部分作为表达式执行。</p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/preprocess.png" class="">
+<p>然后在<code>org.thymeleaf.standard.expression.VariableExpression.executeVariableExpression()</code>中使用SpEL执行表达式，触发RCE</p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/execute.png" class="">
 
-<p>如此配置完后，命令行下的java版本可以成功切换。但是重启idea后还是java版本没变化  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/idea1.png" class=""> 
+<h2 id="危险的预处理"><a href="#危险的预处理" class="headerlink" title="危险的预处理"></a>危险的预处理</h2><p>我们已经知道上文漏洞的触发点是Thymeleaf的预处理功能。那预处理在模板中是否也能工作，是否也会存在SSTI漏洞？<br>先抛开疑问看下Thymeleaf模板的语法，模板中有以下几种常用的表达式：</p>
+<blockquote>
+<p>   ${…}: 变量表达式<br>    *{…}: 选择表达式<br>    #{…}: 消息表达式<br>    @{…}: 链接表达式<br>    ~{…}: 片段表达式  </p>
+</blockquote>
+<p>以上任意一种表达式内嵌使用预处理，只要预处理的数据可控，均能造成SSTI漏洞。以变量表达式为例，对应的模板url.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!doctype <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;__$&#123;link&#125;__&#125;"</span>&gt;</span>test<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在控制器中获取参数link并传递给模板</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//GET /url?link=($%7bT(java.lang.Runtime).getRuntime().exec('calc')%7d)</span></span><br><span class="line"><span class="meta">@GetMapping</span>(<span class="string">"/url"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">url</span><span class="params">(@RequestParam(name=<span class="string">"link"</span>)</span> String link, Model model) </span>&#123;</span><br><span class="line">    model.addAttribute(<span class="string">"link"</span>, link);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"url"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>进入Project Structure -&gt; Project ，修改 Project SDK为想要切换的版本。或者在 Platform Settings -&gt; SDKs中添加并选择  </p>
-<img src="/2020/08/24/JDK%E5%A4%9A%E7%89%88%E6%9C%AC%E5%88%87%E6%8D%A2/idea2.png" class=""> 
+<p>渲染模板时引擎会解析标签处理属性，简化的调用流程如下  </p>
+<blockquote>
+<p>org.thymeleaf.util.ProcessorConfigurationUtils.ElementTagProcessorWrapper.process()<br>org.thymeleaf.processor.element.AbstractElementTagProcessor.process()<br>org.thymeleaf.processor.element.AbstractAttributeTagProcessor.doProcess()<br>org.thymeleaf.standard.processor.AbstractStandardExpressionAttributeTagProcessor.doProcess() //解析属性，执行表达式  </p>
+</blockquote>
+<p>此时会通过<code>EngineEventUtils.computeAttributeExpression</code>将属性计算成表达式，经过预处理后表达式如下，执行时将触发恶意SpEL表达式</p>
+<img src="/2020/11/15/Thymeleaf-%E6%A8%A1%E6%9D%BF%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/spel.png" class="">
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Thymeleaf模板安全问题主要依赖预处理功能，根据执行入口的不同分为两种情况：</p>
+<ol>
+<li>视图名称可控，即 return ‘xxx’ + var</li>
+<li>模板预处理变量可控，即 @{/xx/<strong>${var}</strong>}</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://raledong.gitbooks.io/using-thymeleaf/content/" target="_blank" rel="noopener">https://raledong.gitbooks.io/using-thymeleaf/content/</a><br><a href="https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html#views-and-view-resolvers-in-spring-mvc" target="_blank" rel="noopener">https://www.thymeleaf.org/doc/tutorials/3.0/thymeleafspring.html#views-and-view-resolvers-in-spring-mvc</a><br><a href="https://www.acunetix.com/blog/web-security-zone/exploiting-ssti-in-thymeleaf/" target="_blank" rel="noopener">https://www.acunetix.com/blog/web-security-zone/exploiting-ssti-in-thymeleaf/</a><br><a href="https://www.veracode.com/blog/secure-development/spring-view-manipulation-vulnerability" target="_blank" rel="noopener">https://www.veracode.com/blog/secure-development/spring-view-manipulation-vulnerability</a>  </p>
 
         </section>
         <hr/>
         <nav class="pagination" style="width:auto" role="pagination">
             
-            <a data-pjax class="newer-posts" href="/2020/11/15/Thymeleaf-模板漏洞分析/">← Prev Post</a>
+            <a style="cursor:default" class="newer-posts" href="#">This is the First Post</a>
             
             <a class="share-button" data-original-title title>Share this Post</a>
             
-            <a data-pjax class="older-posts" href="/2020/08/24/shiro-权限绕过漏洞合集/">Next Post →</a>
+            <a data-pjax class="older-posts" href="/2020/08/24/JDK多版本切换/">Next Post →</a>
             
         </nav>
         <br/>
